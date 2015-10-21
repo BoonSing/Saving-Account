@@ -73,7 +73,7 @@ public class Account
 		}
 				
 		//Menu screen.
-		int option;
+		int option,action;
 		Scanner input = new Scanner(System.in);
 		boolean changed = false;
 		boolean subloop;
@@ -81,11 +81,12 @@ public class Account
 		mainloop: while (true)
 		{
 			System.out.println ("\nSelect the action that you want to perform:");
-			System.out.println ("   1.  Create a saving account number");
-			System.out.println ("   2.  Loop up a saving account number");
-			System.out.println ("   3.  Delete a saving account number");
-			System.out.println ("   4.  Exit from program");
-			System.out.println ("Enter action number (1-4):");
+			System.out.println ("   1.  Create a saving account");
+			System.out.println ("   2.  Inquiry a saving account");
+			System.out.println ("   3.  Withdraw or Deposit");
+			System.out.println ("   4.  Delete a saving account");
+			System.out.println ("   5.  Exit from program");
+			System.out.println ("Enter action number (1-5):");
 			if (input.hasNextInt())
 			{
 				option = input.nextInt();
@@ -197,6 +198,64 @@ public class Account
 				}
 				case 3:
 				{
+					System.out.println ("To withdraw or deposit.");
+					System.out.println ("Please enter your name ");
+					accHolder = input.nextLine().trim().toLowerCase();
+					System.out.println ("Please enter your IC ");
+					accHolderIC = input.nextLine();
+
+					accHolderDetail = accHolder + '$' + accHolderIC;
+					
+					accNumDetail = account.get(accHolderDetail);
+					if (accNumDetail == null)
+					{
+						System.out.println ("\nSorry, no account number found under name of " + '"' + accHolder +
+								'"' + " and IC of " + '"' + accHolderIC + '"');
+						System.out.println ("Transaction ended.");
+					}
+					else
+					{
+						int separator = accNumDetail.indexOf('$');
+						accNum = Long.parseLong(accNumDetail.substring(0, separator));
+						accBalance = Double.parseDouble(accNumDetail.substring(separator + 1));
+						System.out.println ("Account holder name: " + accHolder);
+						System.out.println ("Account holder IC: " + accHolderIC);
+						System.out.println ("Account number: " + accNum);
+						System.out.println ("Account balance: RM" + accBalance);
+						System.out.println ("\nSelect the action that you want to perform:");
+						System.out.println ("   1.  Withdraw");
+						System.out.println ("   2.  Deposit");
+						System.out.println ("Enter action number (1 or 2):");	
+						action = input.nextInt();
+						if (action == 1)
+						{
+							System.out.println ("Please enter amount you want to withdraw");
+							input.nextLine();
+							accBalance = accBalance - Double.parseDouble(input.nextLine());
+						}
+						else if (action == 2)
+						{
+							System.out.println ("Please enter amount you want to deposit.");
+							input.nextLine();
+							accBalance = accBalance + Double.parseDouble(input.nextLine());
+						}
+						accNumDetail = accNum + "$" + String.valueOf(accBalance);
+						account.put(accHolderDetail, accNumDetail);
+						System.out.println ("Account summary");
+						System.out.println ("Account holder name: " + accHolder);
+						System.out.println ("Account holder IC: " + accHolderIC);
+						System.out.println ("Account number: " + accNum);
+						if (action == 1)
+							System.out.println ("Account balance after withdraw: RM" + accBalance);
+						else if (action == 2)
+							System.out.println ("Account balance after deposit: RM" + accBalance);
+						
+						changed = true;
+					}
+					break;
+				}				
+				case 4:
+				{
 					System.out.println ("\nTo remove your account.");
 					System.out.println ("Please enter your name ");
 					accHolder = input.nextLine().trim().toLowerCase();
@@ -210,7 +269,7 @@ public class Account
 					{
 						System.out.println ("\nSorry, no account number found under name of " + '"' + accHolder +
 								'"' + " and IC of " + '"' + accHolderIC + '"');
-						System.out.println ("Transaction skipped.");
+						System.out.println ("Transaction ended.");
 					}
 					else
 					{
@@ -220,7 +279,8 @@ public class Account
 					}
 					break;
 				}
-				case 4:
+
+				case 5:
 				{
 					System.out.println ("\nProgram exited.");
 					break mainloop;
@@ -257,3 +317,4 @@ public class Account
 	      }  
 	}
 }
+
